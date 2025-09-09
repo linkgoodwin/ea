@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright "Jules (AI)"
 #property link      "https://example.com"
-#property version   "1.40" // Clean version for compilation check
-#property description "A trading EA based on Currency Strength, MACD, and RSI. This version has comments removed to ensure compilation."
+#property version   "1.50" // Critical fix for compilation errors
+#property description "A trading EA based on Currency Strength, MACD, and RSI. v1.50 fixes all compilation errors."
 
-#include <Trade\Trade.mqh>
+#include <Trade\\Trade.mqh>
 
 //--- input parameters
 input group             "Strategy Settings"
