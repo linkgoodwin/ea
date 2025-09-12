@@ -400,9 +400,11 @@ bool IsAdxCrossDown(const double adx1, const double adx2, const double threshold
 int CountPositionsTotal()
 {
     int total = 0;
-    for(int i=0; i<PositionsTotal(); ++i)
+    int idx;
+    int totalPositions = PositionsTotal();
+    for(idx = 0; idx < totalPositions; ++idx)
     {
-        if(!PositionSelectByIndex(i))
+        if(!PositionSelectByIndex(idx))
             continue;
         if(PositionGetString(POSITION_SYMBOL) != g_symbol)
             continue;
@@ -417,9 +419,11 @@ int CountPositionsTotal()
 int CountPositionsByDirection(const int dir)
 {
     int count = 0;
-    for(int i=0; i<PositionsTotal(); ++i)
+    int idx;
+    int totalPositions = PositionsTotal();
+    for(idx = 0; idx < totalPositions; ++idx)
     {
-        if(!PositionSelectByIndex(i))
+        if(!PositionSelectByIndex(idx))
             continue;
         if(PositionGetString(POSITION_SYMBOL) != g_symbol)
             continue;
@@ -585,9 +589,10 @@ int ClosePositionsByDirection(const int dir, const string reason)
     double bid = SymbolInfoDouble(g_symbol, SYMBOL_BID);
     price_marker = (dir==1 ? bid : ask);
 
-    for(int i=PositionsTotal()-1; i>=0; --i)
+    int idx;
+    for(idx = PositionsTotal()-1; idx>=0; --idx)
     {
-        if(!PositionSelectByIndex(i))
+        if(!PositionSelectByIndex(idx))
             continue;
         if(PositionGetString(POSITION_SYMBOL) != g_symbol)
             continue;
@@ -674,9 +679,11 @@ void UpdatePanels()
     // PnL panel
     double totalUSD = 0.0;
     double totalPoints = 0.0;
-    for(int i=0; i<PositionsTotal(); ++i)
+    int idx;
+    int totalPositions = PositionsTotal();
+    for(idx = 0; idx < totalPositions; ++idx)
     {
-        if(!PositionSelectByIndex(i))
+        if(!PositionSelectByIndex(idx))
             continue;
         if(PositionGetString(POSITION_SYMBOL) != g_symbol)
             continue;
