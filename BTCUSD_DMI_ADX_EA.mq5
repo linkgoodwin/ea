@@ -90,6 +90,7 @@ void    DrawExitArrow(const int dir, const double price, const string reason);
 void    DrawExitLabel(const double price, const string text);
 void    UpdatePanels();
 void    ResetDailyCounterIfNeeded();
+string  TFToString(ENUM_TIMEFRAMES tf);
 
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -132,7 +133,7 @@ int OnInit()
 
     UpdatePanels();
 
-    Print("BTCUSD_DMI_ADX_EA initialized on ", g_symbol, " TF=", EnumToString(g_signal_tf));
+    Print("BTCUSD_DMI_ADX_EA initialized on ", g_symbol, " TF=", TFToString(g_signal_tf));
     return(INIT_SUCCEEDED);
 }
 
@@ -175,22 +176,20 @@ void OnTradeTransaction(const MqlTradeTransaction &trans, const MqlTradeRequest 
     if(trans.type == TRADE_TRANSACTION_DEAL_ADD)
     {
         ulong deal_ticket = trans.deal;
-        if(HistorySelectByPosition(trans.position))
+        HistorySelect(TimeCurrent() - 86400*10, TimeCurrent() + 60);
+        long magic = (long)HistoryDealGetInteger(deal_ticket, DEAL_MAGIC);
+        string sym = HistoryDealGetString(deal_ticket, DEAL_SYMBOL);
+        if(magic == g_magic && sym == g_symbol)
         {
-            long magic = (long)HistoryDealGetInteger(deal_ticket, DEAL_MAGIC);
-            string sym = HistoryDealGetString(deal_ticket, DEAL_SYMBOL);
-            if(magic == g_magic && sym == g_symbol)
+            int deal_entry = (int)HistoryDealGetInteger(deal_ticket, DEAL_ENTRY);
+            int deal_reason = (int)HistoryDealGetInteger(deal_ticket, DEAL_REASON);
+            if(deal_entry == DEAL_ENTRY_OUT)
             {
-                int deal_type = (int)HistoryDealGetInteger(deal_ticket, DEAL_TYPE);
-                if(deal_type == DEAL_TYPE_SELL || deal_type == DEAL_TYPE_BUY)
-                {
-                    // entry
-                }
-                else if(deal_type == DEAL_TYPE_SL || deal_type == DEAL_TYPE_TP)
-                {
-                    double price = HistoryDealGetDouble(deal_ticket, DEAL_PRICE);
-                    DrawExitLabel(price, (deal_type==DEAL_TYPE_SL?"SL hit":"TP hit"));
-                }
+                double price = HistoryDealGetDouble(deal_ticket, DEAL_PRICE);
+                string label = "Exit";
+                if(deal_reason == DEAL_REASON_SL) label = "SL hit";
+                else if(deal_reason == DEAL_REASON_TP) label = "TP hit";
+                DrawExitLabel(price, label);
             }
         }
     }
@@ -300,7 +299,9 @@ void ProcessSignalsOnBarClose()
     if(g_adx_handle == INVALID_HANDLE)
         return;
 
-    double adx[3], plusDI[3], minusDI[3];
+    double adx[];
+    double plusDI[];
+    double minusDI[];
     ArraySetAsSeries(adx, true);
     ArraySetAsSeries(plusDI, true);
     ArraySetAsSeries(minusDI, true);
@@ -619,8 +620,8 @@ int ClosePositionsByDirection(const int dir, const string reason)
 //+------------------------------------------------------------------+
 void DrawEntryArrow(const int dir, const double price, const string reason)
 {
-    string name = StringFormat("DMIADX_ENTRY_%s_%I64d", (dir==1?"BUY":"SELL"), (long long)TimeCurrent());
-    int arrowType = (dir==1 ? OBJ_ARROW_BUY : OBJ_ARROW_SELL);
+    string name = "DMIADX_ENTRY_" + string(dir==1?"BUY":"SELL") + "_" + IntegerToString((int)GetTickCount());
+    ENUM_OBJECT arrowType = (dir==1 ? OBJ_ARROW_BUY : OBJ_ARROW_SELL);
     if(ObjectCreate(0, name, arrowType, 0, TimeCurrent(), price))
     {
         ObjectSetInteger(0, name, OBJPROP_COLOR, (dir==1?clrLime:clrRed));
@@ -631,8 +632,8 @@ void DrawEntryArrow(const int dir, const double price, const string reason)
 
 void DrawExitArrow(const int dir, const double price, const string reason)
 {
-    string name = StringFormat("DMIADX_EXIT_%s_%I64d", (dir==1?"BUY":"SELL"), (long long)TimeCurrent());
-    int arrowType = (dir==1 ? OBJ_ARROW_SELL : OBJ_ARROW_BUY);
+    string name = "DMIADX_EXIT_" + string(dir==1?"BUY":"SELL") + "_" + IntegerToString((int)GetTickCount());
+    ENUM_OBJECT arrowType = (dir==1 ? OBJ_ARROW_SELL : OBJ_ARROW_BUY);
     if(ObjectCreate(0, name, arrowType, 0, TimeCurrent(), price))
     {
         ObjectSetInteger(0, name, OBJPROP_COLOR, clrYellow);
@@ -643,7 +644,7 @@ void DrawExitArrow(const int dir, const double price, const string reason)
 
 void DrawExitLabel(const double price, const string text)
 {
-    string name = StringFormat("DMIADX_EXITLBL_%I64d", (long long)TimeCurrent());
+    string name = "DMIADX_EXITLBL_" + IntegerToString((int)GetTickCount());
     if(ObjectCreate(0, name, OBJ_TEXT, 0, TimeCurrent(), price))
     {
         ObjectSetInteger(0, name, OBJPROP_COLOR, clrYellow);
@@ -659,8 +660,8 @@ void UpdatePanels()
 {
     // Settings panel
     string s = "";
-    s += StringFormat("EA: BTCUSD DMI/ADX\n");
-    s += StringFormat("TF: %s  DMI: %d\n", EnumToString(g_signal_tf), g_dmi_period);
+    s += "EA: BTCUSD DMI/ADX\n";
+    s += StringFormat("TF: %s  DMI: %d\n", TFToString(g_signal_tf), g_dmi_period);
     s += StringFormat("ADX High: %.1f  Low: %.1f\n", g_adx_high, g_adx_low);
     s += StringFormat("TP: $%.0f  SL: $%.0f\n", g_tp_usd, g_sl_usd);
     s += StringFormat("Lot: %.2f  Risk: %.1f%%\n", g_lot_size_inp, g_risk_percent);
@@ -701,6 +702,22 @@ void ResetDailyCounterIfNeeded()
         g_daily_key = key;
         g_daily_trade_count = 0;
         Print("[INFO] New trading day. Daily counter reset.");
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Timeframe to string helper                                        |
+//+------------------------------------------------------------------+
+string TFToString(ENUM_TIMEFRAMES tf)
+{
+    switch(tf)
+    {
+        case PERIOD_M15: return "M15";
+        case PERIOD_M30: return "M30";
+        case PERIOD_H1:  return "H1";
+        case PERIOD_H4:  return "H4";
+        case PERIOD_D1:  return "D1";
+        default: return IntegerToString((int)tf);
     }
 }
 
