@@ -1,0 +1,235 @@
+# DMI Bitcoin EA - Configuration Templates
+
+## Configuration 1: Conservative Trading
+Description: Low risk, smaller positions, quick exits
+Best for: New traders, small accounts, volatile markets
+
+DMI_Period = 21
+Trading_Timeframe = PERIOD_M30
+Lot_Multiplier = 0.5
+Risk_Percent = 1.0
+StopLoss_Intervals = 1
+Daily_StopLoss_Limit = 2
+Trading_Pause_Hours = 24
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Lower drawdown, smaller profits, higher win rate
+
+---
+
+## Configuration 2: Balanced Trading (Default)
+Description: Moderate risk, standard positions, balanced approach
+Best for: Experienced traders, medium accounts, normal markets
+
+DMI_Period = 14
+Trading_Timeframe = PERIOD_M15
+Lot_Multiplier = 1.0
+Risk_Percent = 2.0
+StopLoss_Intervals = 2
+Daily_StopLoss_Limit = 3
+Trading_Pause_Hours = 12
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Balanced risk/reward, moderate drawdown, consistent performance
+
+---
+
+## Configuration 3: Aggressive Trading
+Description: Higher risk, larger positions, longer holds
+Best for: Professional traders, large accounts, trending markets
+
+DMI_Period = 10
+Trading_Timeframe = PERIOD_M15
+Lot_Multiplier = 1.5
+Risk_Percent = 3.0
+StopLoss_Intervals = 3
+Daily_StopLoss_Limit = 5
+Trading_Pause_Hours = 6
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Higher profits potential, increased drawdown, more volatile
+
+---
+
+## Configuration 4: Scalping Setup
+Description: Quick trades, tight management, high frequency
+Best for: Scalpers, high-speed execution, range-bound markets
+
+DMI_Period = 8
+Trading_Timeframe = PERIOD_M5
+Lot_Multiplier = 0.8
+Risk_Percent = 1.5
+StopLoss_Intervals = 1
+Daily_StopLoss_Limit = 8
+Trading_Pause_Hours = 4
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Many small trades, quick exits, requires monitoring
+
+---
+
+## Configuration 5: Trend Following
+Description: Longer-term trends, patient approach, bigger moves
+Best for: Trend traders, patient investors, strong trend markets
+
+DMI_Period = 28
+Trading_Timeframe = PERIOD_H1
+Lot_Multiplier = 1.2
+Risk_Percent = 2.5
+StopLoss_Intervals = 4
+Daily_StopLoss_Limit = 2
+Trading_Pause_Hours = 48
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Fewer but larger trades, longer holding periods
+
+---
+
+## Configuration 6: Bull Market Only
+Description: Only long positions during strong uptrends
+Best for: Bull markets, Bitcoin halving periods, strong fundamentals
+
+DMI_Period = 14
+Trading_Timeframe = PERIOD_M30
+Lot_Multiplier = 1.3
+Risk_Percent = 2.5
+StopLoss_Intervals = 3
+Daily_StopLoss_Limit = 3
+Trading_Pause_Hours = 12
+Allow_Buy = true
+Allow_Sell = false
+
+Expected: Captures upward moves, avoids short positions
+
+---
+
+## Configuration 7: Bear Market Only  
+Description: Only short positions during strong downtrends
+Best for: Bear markets, market crashes, negative sentiment
+
+DMI_Period = 14
+Trading_Timeframe = PERIOD_M30
+Lot_Multiplier = 1.1
+Risk_Percent = 1.8
+StopLoss_Intervals = 2
+Daily_StopLoss_Limit = 4
+Trading_Pause_Hours = 8
+Allow_Buy = false
+Allow_Sell = true
+
+Expected: Profits from downward moves, avoids long positions
+
+---
+
+## Configuration 8: News Trading
+Description: Quick reactions to news events, tight risk management
+Best for: News events, earnings, regulatory announcements
+
+DMI_Period = 5
+Trading_Timeframe = PERIOD_M5
+Lot_Multiplier = 0.6
+Risk_Percent = 1.0
+StopLoss_Intervals = 1
+Daily_StopLoss_Limit = 10
+Trading_Pause_Hours = 2
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Fast entries/exits, high frequency, requires attention
+
+---
+
+## Configuration 9: Weekend Trading
+Description: Lower activity periods, conservative approach
+Best for: Weekend markets, low volatility, thin liquidity
+
+DMI_Period = 21
+Trading_Timeframe = PERIOD_H1
+Lot_Multiplier = 0.7
+Risk_Percent = 1.5
+StopLoss_Intervals = 2
+Daily_StopLoss_Limit = 2
+Trading_Pause_Hours = 24
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Fewer opportunities, lower risk, patient approach
+
+---
+
+## Configuration 10: High Volatility
+Description: Adapted for extreme market conditions
+Best for: High VIX periods, market stress, major events
+
+DMI_Period = 18
+Trading_Timeframe = PERIOD_M15
+Lot_Multiplier = 0.4
+Risk_Percent = 1.2
+StopLoss_Intervals = 1
+Daily_StopLoss_Limit = 5
+Trading_Pause_Hours = 6
+Allow_Buy = true
+Allow_Sell = true
+
+Expected: Smaller positions, quick exits, survival focus
+
+---
+
+## Parameter Optimization Guidelines
+
+### DMI_Period:
+- Lower values (5-10): More sensitive, more signals, more noise
+- Medium values (11-20): Balanced sensitivity and reliability
+- Higher values (21-50): Less sensitive, fewer signals, smoother
+
+### Trading_Timeframe:
+- M5: High frequency, requires monitoring, more signals
+- M15: Balanced approach, good for most strategies
+- M30-H1: Lower frequency, longer-term perspective
+- H4+: Very long-term, fewer but stronger signals
+
+### Lot_Multiplier:
+- 0.1-0.5: Very conservative, small positions
+- 0.6-1.0: Moderate risk, standard positions  
+- 1.1-2.0: Aggressive, larger positions
+- 2.0+: Very aggressive, high risk
+
+### Risk_Percent:
+- 0.5-1.0%: Conservative risk management
+- 1.1-2.0%: Moderate risk tolerance
+- 2.1-3.0%: Aggressive risk taking
+- 3.0%+: High risk, experienced traders only
+
+### StopLoss_Intervals:
+- 1: Quick exits, tight management
+- 2-3: Balanced approach, moderate tolerance
+- 4-5: Patient approach, wider stops
+
+### Daily_StopLoss_Limit:
+- 1-2: Very conservative, quick pause
+- 3-5: Moderate protection
+- 6-10: Higher tolerance, more trading
+
+## Testing Recommendations
+
+1. Always backtest configurations on historical data
+2. Forward test on demo account for at least 2 weeks
+3. Start with conservative settings and gradually increase risk
+4. Monitor performance metrics: Win rate, Profit factor, Drawdown
+5. Adjust parameters based on market conditions
+6. Keep detailed trading logs for analysis
+7. Review and optimize settings monthly
+
+## Risk Warnings
+
+- Never risk more than you can afford to lose
+- Cryptocurrency markets are highly volatile
+- Past performance does not guarantee future results
+- Always use proper risk management
+- Monitor the EA regularly
+- Be prepared to intervene if necessary
