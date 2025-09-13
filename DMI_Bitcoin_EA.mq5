@@ -481,7 +481,8 @@ void CreateTradeLabel(string text, color label_color)
 {
     string obj_name = "DMI_EA_Label_" + IntegerToString(TimeCurrent());
     
-    if(ObjectCreate(0, obj_name, OBJ_TEXT, 0, TimeCurrent(), Close[0])) {
+    double current_price = SymbolInfoDouble(Symbol(), SYMBOL_BID);
+    if(ObjectCreate(0, obj_name, OBJ_TEXT, 0, TimeCurrent(), current_price)) {
         ObjectSetString(0, obj_name, OBJPROP_TEXT, text);
         ObjectSetInteger(0, obj_name, OBJPROP_COLOR, label_color);
         ObjectSetInteger(0, obj_name, OBJPROP_FONTSIZE, 10);
